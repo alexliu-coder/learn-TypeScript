@@ -14,11 +14,11 @@ const声明的简单数据时，ts会把特定的值推导为类型，但是声�
 
 ```typescript
 let a: {
-	b: number,                     // 表示必须有
-	c?: string,                    // 表示可选
-	[key: number]: boolean,        // 表示任意个
-	[seatNumber: string]: string,  // 不一定是key，可以取别的名字
-	readonly firstName: string     // 不可以更改值的键
+  b: number,                     // 表示必须有
+  c?: string,                    // 表示可选
+  [key: number]: boolean,        // 表示任意个
+  [seatNumber: string]: string,  // 不一定是key，可以取别的名字
+  readonly firstName: string     // 不可以更改值的键
 }
 ```
 
