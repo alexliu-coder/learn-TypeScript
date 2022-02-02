@@ -298,3 +298,44 @@ function call<T extends [unknown, string, ...unknown[]], R>(
 	return f(args);
 }
 ```
+
+## 类和继承
+
+构造方法中的修饰符
+
+```typescript
+type Color = 'write' | 'black';
+class Piece {
+	constructor (
+		private readonly color: Color
+	) {}
+}
+
+class Piece {
+	protected color: Color;
+	constructor (color: string) {
+		this.color = color
+	}
+}
+```
+
+public 任何地方都可以访问的属性和方法
+protected 只能是当前类及其子类访问
+private 只能是当前类访问
+
+抽象类
+
+```typescript
+abstract class Piece {
+	constructor () {};
+	moveTo (position: [number, number]) {...};
+	abstract move(position: [number, number]): boolean;
+}
+```
+
+抽象类不能初始化，但是还是可以在抽象类中新增方法
+子类继承了抽象类以后，必须实现抽象类的方法
+
+ts中也可以使用super关键字来访问父类的方法
+
+#### 以this返回的类型
