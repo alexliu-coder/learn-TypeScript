@@ -339,3 +339,52 @@ abstract class Piece {
 ts中也可以使用super关键字来访问父类的方法
 
 #### 以this返回的类型
+
+this可以作为js的值，也可以作为类型，对类来说，可以用于注解方法的返回类型
+
+```typescript
+class Set {
+	add(value: any): this {
+		// ...
+	}
+}
+
+class MutableSet extends Set {
+	// mutable set的add方法需要返回的是mutableSet，所以add方法需要返回this
+}
+
+```
+
+## 接口
+
+接口和类型关键字type类似
+
+```typescript
+type food = {
+	name: string
+}
+type susi = food & {
+	salty: boolean
+}
+
+interface food = {
+	name: string
+}
+```
+
+interface 和 type 的区别：
+
+1. type的右边可以是任何类型，包括类型的表达式，运算符号；而interface的右边必须为结构
+2. 扩展接口的时候ts将检查扩展的接口是否可赋值给被扩展的接口
+
+```typescript
+interface A {
+	good(x: number): string
+	bad(x: number): string
+}
+
+interface B extends A {
+	good(x: string | number): string   // correct (x: string | number): string 可以赋值给 (x: number): string
+	bad(x: string): string             // error (x: string): string不可以赋值给 bad(x: number): string
+}
+```
