@@ -375,9 +375,11 @@ interface food = {
 interface 和 type 的区别：
 
 1. type的右边可以是任何类型，包括类型的表达式，运算符号；而interface的右边必须为结构
-2. 扩展接口的时候ts将检查扩展的接口是否可赋值给被扩展的接口
+2. 扩展接口的时候ts将检查扩展的接口是否可赋值给被扩展的接口；使用type和&扩展的时候，会使函数重载
+3. 同一个作用域的多个同名接口将自动合并，但是同一个作用域的多个类型别名会导致编译错误(p115声明合并)
 
 ```typescript
+// 2.接口扩展示例
 interface A {
 	good(x: number): string
 	bad(x: number): string
@@ -386,5 +388,68 @@ interface A {
 interface B extends A {
 	good(x: string | number): string   // correct (x: string | number): string 可以赋值给 (x: number): string
 	bad(x: string): string             // error (x: string): string不可以赋值给 bad(x: number): string
+}
+```
+
+## 类的实现
+
+声明类的时候使用implements关键字来指明该类满足的接口, 一个类可以实现多个接口
+
+```typescript
+interface Animal {
+	eat(food: string): void
+	sleep(hours: number): void
+}
+
+interface DogType {
+	bark(): void
+}
+class Dog implements Animal, DogType {
+	bark() {}
+	eat(food) {}
+	sleep(hours) {}
+}
+```
+
+#### 类的泛型
+
+1. 在声明类的时候声明泛型，此处声明的泛型可以在实例方法和实例属性使用
+2. 构造方法不能声明泛型
+3. 实力方法也可以有自己的泛型，也可以使用一级的泛型
+4. 静态方法不能访问类的泛型
+
+```typescript
+class MyMap<T, U> {
+	constructor(key: T, value: U) {
+		
+	}
+	get(key: T): U {
+		//...
+	}
+	set(key: T, value: U): void {
+
+	}
+	merge<K1, K2>(map: MyMap<T, U>): MyMap<T | K1, U | K2> {
+		
+	}
+	static of<T, U>(k: T, v: U): MyMap<T, U> {
+
+	}
+}
+```
+
+## 混入
+
+```typescript
+type ClassConstructor<T> = new(...args: any[]) => T;
+
+function EZDebug<C extends ClassConstructor<{ getDebugValue(): object>>(Class: C) {
+	return class extends Class {
+		debug() {
+			let name = Class.constructor.name;
+			let value = this.getDebugValue();
+			return name + value
+		}
+	}
 }
 ```
