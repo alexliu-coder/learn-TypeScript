@@ -556,3 +556,65 @@ function handle2(event: UserEvent) {
 }
 
 ```
+
+#### 键入
+
+通过键来获取类型
+
+```typescript
+type UserInfoRes = {
+    user: {
+        name: string
+        id: string
+        friendList: {
+            count: number
+            friend: {
+                firstName: string
+                lastName: string
+            }[]
+        }
+    }
+}
+
+type friendList = UserInfoRes['user']['friendList']
+
+type friend = friendList['friend'][number] // number是‘键入’数组类型的方式，如果是元祖，可以使用0、1或其他数字字面量
+```
+
+#### keyof 运算符
+
+```typescript
+type Test = {
+    a: string
+    b: number
+    c: boolean
+}
+
+// K extends keyof O 表示K至少是 'a' | 'b' | 'c' 
+function get<O extends object, K extends keyof O>(o: O, k: K): O[K] {
+    return o[k];
+}
+
+let test: Test = {
+    a: '123',
+    b: 123,
+    c: true
+}
+
+get(test, 'b') // return number
+```
+
+#### Record关键字
+
+```typescript
+type WeekDay = 'mon' | 'tue' | 'wen' | 'thu' | 'fri'
+
+type Day = WeekDay | 'sat' | 'sun'
+
+let nextDay: Record<WeekDay, Day> = {
+    mon: 'tue',
+    tue: 'ddd'  // error!!! 'ddd' is not assignable to type 'Day'
+}
+```
+
+Record<T, U>表示键和值的对应关系，键的类型是T，值的类型是U
