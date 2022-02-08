@@ -513,6 +513,13 @@ new API(badOption) // ok 不会报错
 使用分支来推到类型，辨别并集类型
 handle不可以区分，handle2可以区分出text和mouse事件
 
+通过标记来辨别类型的原则:
+
+1. 标记需要再并集类型的各组成部分的相同位置上
+2. 使用字面量类型(字符串、数字、布尔值等)，最好使用同一种字面量
+3. 不要使用泛型
+4. 要互斥
+
 ```typescript
 type UserTextEvent = {
     type: 'input'
