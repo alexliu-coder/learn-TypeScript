@@ -453,3 +453,99 @@ function EZDebug<C extends ClassConstructor<{ getDebugValue(): object>>(Class: C
 	}
 }
 ```
+
+## 类型进阶
+
+#### 子类和超类
+
+any => Object => Array => Tuple => never 右边是左边的子类，左边是右边的超类
+
+A >: B   B是A的子类
+A <: B   B是A的超类
+
+#### 函数的型变
+
+1. 函数A的参数数量小于函数B
+2. 函数A的this类型微指定，或者>:B的this
+3. 函数A的各个参数类型>:函数B的相应参数
+4. 函数A的返回类型<:函数B的返回类型
+
+满足上述4个条件，则函数A是函数B的子类型；(p144)
+
+#### 类型拓宽
+
+Typescript在推导类型时，会推到出一个更宽的类型
+
+let 和 var 赋值的时候，类型会拓宽
+const 赋值的时候类型会锁定
+
+const作为类型断言
+
+```typescript
+let c = { x: 3 } as const;
+
+let e = [1, {x: 2}] as const;  // readonly [1, {readonly x: 2}]
+// const会阻止类型拓宽并且递归将成员设置为readonly
+```
+
+```typescript
+type Option = {
+    baseURL: string
+    cacheSize?: number
+    tier?: 'prod' | 'dev'
+}
+class API {
+    constructor(private option: Option) {
+    }
+}
+
+new API({baseURL: '123', badTier: 'dev'} as Option) // 让ts不进行属性检查
+
+
+let badOption = {
+    baseURL: '123',
+    badTier: 'dev'
+}
+// 把选项对象赋值给变量badOption，typescript不在把它视为新鲜对象，因此不做多余的检查
+new API(badOption) // ok 不会报错
+```
+
+使用分支来推到类型，辨别并集类型
+handle不可以区分，handle2可以区分出text和mouse事件
+
+```typescript
+type UserTextEvent = {
+    type: 'input'
+    value: string
+    target: HTMLInputElement
+}
+
+type UserMouseEvent = {
+    type: 'click'
+    value: [number, number]
+    target: HTMLElement
+}
+
+type UserEvent = UserMouseEvent | UserTextEvent;
+
+function handle(event: UserEvent) {
+    if (typeof event.value === 'string') {
+        console.log(event.value)
+        console.log(event.target)
+        return
+    }
+    console.log(event.value)
+    console.log(event.target)
+}
+
+function handle2(event: UserEvent) {
+    if (event.type === 'input') {
+        console.log(event.value)
+        console.log(event.target)
+        return
+    }
+    console.log(event.value)
+    console.log(event.target)
+}
+
+```
