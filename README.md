@@ -674,3 +674,71 @@ type NoOptionalAccount = {
 3. ```Required<Object>```, Object内的键全部必填
 4. ```Readonly<Object>```, 返回只读
 5. ```Pick<Object, Keys>```, Object的子类，只包含Keys
+
+#### 元祖函数
+
+元祖的声明：
+
+```typescript
+function tuple<T extends unknown[]>(...args: T): T {
+	return args
+}
+
+// 由于T描述的是剩余参数，所以ts推到出是元祖
+```
+
+#### 条件类型
+
+使用extends来做三元条件判断
+类型别名、接口、类、参数都可以使用条件类型
+
+```typescript
+type IsString<T> = T extends string ? true : false
+
+type A = IsString<string>  // true
+
+
+// 分配律
+(string | number) extends T ? A : B
+
+(string extends T ? A : B) | (number extends T ? A : B)
+
+
+// without
+type Without<T, U> = {
+	T extends U ? never : T
+}
+
+type Union = string | number | boolean
+type Out = string
+
+Without<Union, Out>
+```
+
+#### infer关键字
+
+infer关键字可以在条件中声明泛型
+
+```typescript
+type ElementType<T> = T extends unknown[] ? T[number] : T
+
+type ElementType<T> = T extends (infer U)[] ? U : T
+```
+
+内置的条件类型：(p178)
+
+1. ```Exclude<T, U>``` 在T不在U的类型
+2. ```Extract<T, U>``` 计算T中可以赋值给U的类型，取出T中的U
+3. ```NonNullable<T>``` 从T中排出null和undefined
+4. ```ReturnType<F>``` 计算函数的返回类型
+
+#### 断言
+
+```typescript
+// as 断言
+let a = [1, 2] as const; 
+
+// 非空断言！
+let id = '1234'
+document.getElementById(id!)
+```
