@@ -618,3 +618,59 @@ let nextDay: Record<WeekDay, Day> = {
 ```
 
 Record<T, U>表示键和值的对应关系，键的类型是T，值的类型是U
+
+in 关键字：
+
+1. 作为js的判断使用，k in obj判断obj[k]是否存在
+2. 在ts中遍历UnionType来使用
+<https://stackoverflow.com/questions/50214731/what-does-the-in-keyword-do-in-typescript>
+
+keyof 关键字：
+接口一个对象，返回键组成的UnionType
+<https://www.typescriptlang.org/docs/handbook/2/keyof-types.html>
+
+```typescript
+type Record<K extends keyof any, U> = {
+	[P in K]: U
+}
+```
+
+#### 映射类型
+
+映射类型的功能比Record功能更强大，配合‘键入’还可以约束特定键的类型
+
+```typescript
+type Account = {
+	id: number
+	name: string
+	notes: string[]
+}
+
+type OptionalAccount = {
+	[Key in keyof Account]?: Account[Key]
+}
+
+type AccountCanNull = {
+	[Key in keyof Account]: Account[Key] | null
+}
+
+type ReadonlyAccount = {
+	readonly [Key in keyof Account]: Account[key]
+}
+
+type Account2 = {
+	-readonly [Key in keyof ReadonlyAccount]: ReadonlyAccount[Key]
+}
+
+type NoOptionalAccount = {
+	[Key in keyof OptionalAccount]-?: OptionalAccount[Key]
+}
+```
+
+内置的映射类型：
+
+1. ```Record<Keys, Values>```
+2. ```Partial<Object>```, Object内的键全部为可选
+3. ```Required<Object>```, Object内的键全部必填
+4. ```Readonly<Object>```, 返回只读
+5. ```Pick<Object, Keys>```, Object的子类，只包含Keys
