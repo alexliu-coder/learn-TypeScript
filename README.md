@@ -742,3 +742,11 @@ let a = [1, 2] as const;
 let id = '1234'
 document.getElementById(id!)
 ```
+
+## 类型体操
+
+```typescript
+Pick<T, K extends keyof T> = {
+	[P in K]: T[P]
+}
+```
