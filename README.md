@@ -743,12 +743,16 @@ let id = '1234'
 document.getElementById(id!)
 ```
 
-## 类型体操
+## Effective Typescript
+
+### term7: 将类型是为价值的集合
+
+&操作符需满足所有的类型
+|操作符只需满足其中一个即可
 
 ```typescript
-Pick<T, K extends keyof T> = {
-	[P in K]: T[P]
-}
+type K = 'name' & 'brith'  // K的类型是never 不存在一个值既是name也是brith
 
-test lazygit
+keyof (A&B) = (keyof A) | (keyof B)
+keyof (A|B) = (keyof A) & (keyof B)
 ```
